@@ -12,12 +12,14 @@ import {
   User,
   X,
   Bike,
+  Banknote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HomeTab from "@/components/home-tab";
 import TicketsTab from "@/components/tickets-tab";
 import EventsTab from "@/components/events-tab";
 import NewsTab from "@/components/news-tab";
+import TaxesTab from "@/components/taxes-tab";
 import PlacesTab from "@/components/places-tab";
 import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
@@ -60,6 +62,9 @@ export default function KartaMiejskaApp() {
           </TabsContent>
           <TabsContent value="news" className="mt-0">
             <NewsTab />
+          </TabsContent>
+          <TabsContent value="taxes" className="mt-0">
+            <TaxesTab />
           </TabsContent>
           <TabsContent value="vehicles" className="mt-0">
             <VehiclesTab />
@@ -109,6 +114,14 @@ export default function KartaMiejskaApp() {
                       <span>Miejsca</span>
                     </Button>
                     <Button
+                      variant={activeTab === "taxes" ? "default" : "outline"}
+                      className="h-20 flex-col gap-2"
+                      onClick={() => handleMoreMenuSelect("taxes")}
+                    >
+                      <Banknote className="w-6 h-6" />
+                      <span>Podatki</span>
+                    </Button>
+                    <Button
                       variant={activeTab === "profile" ? "default" : "outline"}
                       className="h-20 flex-col gap-2"
                       onClick={() => handleMoreMenuSelect("profile")}
@@ -151,6 +164,13 @@ export default function KartaMiejskaApp() {
               <Newspaper className="w-5 h-5" />
               <span className="text-xs">Awarie</span>
             </TabsTrigger>
+            {/*<TabsTrigger
+              value="taxes"
+              className="flex-col gap-1 h-full data-[state=active]:text-primary"
+            >
+              <Banknote className="w-5 h-5" />
+              <span className="text-xs">Podatki</span>
+            </TabsTrigger>*/}
             <button
               className="flex flex-col items-center justify-center gap-1 h-full text-muted-foreground hover:text-foreground transition-colors data-[active=true]:text-primary"
               onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
@@ -158,6 +178,7 @@ export default function KartaMiejskaApp() {
                 isMoreMenuOpen ||
                 activeTab === "vehicles" ||
                 activeTab === "places" ||
+                activeTab === "taxes" ||
                 activeTab === "profile"
               }
             >
