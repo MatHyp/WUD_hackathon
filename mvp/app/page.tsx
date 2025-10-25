@@ -1,25 +1,37 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Home, Ticket, Calendar, Newspaper, MoreHorizontal, MapPin, User, X, Bike } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import HomeTab from "@/components/home-tab"
-import TicketsTab from "@/components/tickets-tab"
-import EventsTab from "@/components/events-tab"
-import NewsTab from "@/components/news-tab"
-import PlacesTab from "@/components/places-tab"
-import ProfileTab from "@/components/profile-tab"
-import { VehiclesTab } from "@/components/vehicles-tab"
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Home,
+  Ticket,
+  Calendar,
+  Newspaper,
+  MoreHorizontal,
+  MapPin,
+  User,
+  X,
+  Bike,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import HomeTab from "@/components/home-tab";
+import TicketsTab from "@/components/tickets-tab";
+import EventsTab from "@/components/events-tab";
+import NewsTab from "@/components/news-tab";
+import PlacesTab from "@/components/places-tab";
+import ProfileTab from "@/components/profile-tab";
+import { VehiclesTab } from "@/components/vehicles-tab";
+import Image from "next/image";
 
+import logo from "../img/images.png";
 export default function KartaMiejskaApp() {
-  const [activeTab, setActiveTab] = useState("home")
-  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("home");
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
   const handleMoreMenuSelect = (tab: string) => {
-    setActiveTab(tab)
-    setIsMoreMenuOpen(false)
-  }
+    setActiveTab(tab);
+    setIsMoreMenuOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -27,11 +39,11 @@ export default function KartaMiejskaApp() {
         <div className="flex items-center justify-between max-w-screen-xl mx-auto">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Ticket className="w-5 h-5 text-primary-foreground" />
+              <Image src={logo} alt="Logo" width={32} height={32} />
             </div>
             <h1 className="text-xl font-bold text-balance">Karta Miejska</h1>
           </div>
-          <div className="text-xs text-muted-foreground">Kraków</div>
+          <div className="text-xs text-muted-foreground">Szczecin</div>
         </div>
       </header>
 
@@ -71,7 +83,11 @@ export default function KartaMiejskaApp() {
                 <div className="max-w-screen-xl mx-auto p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Więcej opcji</h3>
-                    <Button variant="ghost" size="icon" onClick={() => setIsMoreMenuOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsMoreMenuOpen(false)}
+                    >
                       <X className="w-5 h-5" />
                     </Button>
                   </div>
@@ -107,19 +123,31 @@ export default function KartaMiejskaApp() {
           )}
 
           <TabsList className="fixed bottom-0 left-0 right-0 h-16 w-full rounded-none border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 grid grid-cols-5 gap-0">
-            <TabsTrigger value="home" className="flex-col gap-1 h-full data-[state=active]:text-primary">
+            <TabsTrigger
+              value="home"
+              className="flex-col gap-1 h-full data-[state=active]:text-primary"
+            >
               <Home className="w-5 h-5" />
               <span className="text-xs">Home</span>
             </TabsTrigger>
-            <TabsTrigger value="tickets" className="flex-col gap-1 h-full data-[state=active]:text-primary">
+            <TabsTrigger
+              value="tickets"
+              className="flex-col gap-1 h-full data-[state=active]:text-primary"
+            >
               <Ticket className="w-5 h-5" />
               <span className="text-xs">Bilety</span>
             </TabsTrigger>
-            <TabsTrigger value="events" className="flex-col gap-1 h-full data-[state=active]:text-primary">
+            <TabsTrigger
+              value="events"
+              className="flex-col gap-1 h-full data-[state=active]:text-primary"
+            >
               <Calendar className="w-5 h-5" />
               <span className="text-xs">Events</span>
             </TabsTrigger>
-            <TabsTrigger value="news" className="flex-col gap-1 h-full data-[state=active]:text-primary">
+            <TabsTrigger
+              value="news"
+              className="flex-col gap-1 h-full data-[state=active]:text-primary"
+            >
               <Newspaper className="w-5 h-5" />
               <span className="text-xs">Awarie</span>
             </TabsTrigger>
@@ -127,7 +155,10 @@ export default function KartaMiejskaApp() {
               className="flex flex-col items-center justify-center gap-1 h-full text-muted-foreground hover:text-foreground transition-colors data-[active=true]:text-primary"
               onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
               data-active={
-                isMoreMenuOpen || activeTab === "vehicles" || activeTab === "places" || activeTab === "profile"
+                isMoreMenuOpen ||
+                activeTab === "vehicles" ||
+                activeTab === "places" ||
+                activeTab === "profile"
               }
             >
               <MoreHorizontal className="w-5 h-5" />
@@ -137,5 +168,5 @@ export default function KartaMiejskaApp() {
         </Tabs>
       </main>
     </div>
-  )
+  );
 }
