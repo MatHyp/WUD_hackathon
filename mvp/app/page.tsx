@@ -22,16 +22,20 @@ import PlacesTab from "@/components/places-tab";
 import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
 import Image from "next/image";
+import Modal from "@/components/Modal";
 
 import logo from "../img/images.png";
+import LoginModal from "@/components/LoginModal";
 export default function KartaMiejskaApp() {
   const [activeTab, setActiveTab] = useState("home");
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [user, setUser] = useState<{ username: string, password: string } | undefined>(undefined);
 
   const handleMoreMenuSelect = (tab: string) => {
     setActiveTab(tab);
     setIsMoreMenuOpen(false);
   };
+  const [modalType, setModalType] = useState<"register" | "login" | null>("login");
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -46,6 +50,12 @@ export default function KartaMiejskaApp() {
           <div className="text-xs text-muted-foreground">Szczecin</div>
         </div>
       </header>
+
+      <LoginModal
+        isOpen={modalType === "login"}
+        onClose={() => setModalType(null)}
+        onSwitchToRegister={() => setModalType("register")}
+      />
 
       <main className="max-w-screen-xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -168,5 +178,9 @@ export default function KartaMiejskaApp() {
         </Tabs>
       </main>
     </div>
+
+
   );
 }
+
+
