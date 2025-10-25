@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import Home from "./component/home/Home";
+import logo from "./img/images.png";
 
 function App() {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -10,10 +11,13 @@ function App() {
       <header className="sticky top-0 z-50 bg-card border-b border-border px-4 py-4">
         <div className="flex items-center justify-between max-w-screen-xl mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"></div>
-            <h1 className="text-xl font-bold text-balance">Karta Miejska</h1>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <img src={logo} alt="" />
+            </div>
+            <h1 className="text-xl font-bold text-balance">
+              Karta Miejska Szczecin
+            </h1>
           </div>
-          <div className="text-xs text-muted-foreground">Szczecin</div>
         </div>
       </header>
 
