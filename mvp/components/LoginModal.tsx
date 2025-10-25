@@ -1,3 +1,5 @@
+import './LoginModal.css';
+
 import React, { useState } from "react";
 import Modal from "./Modal";
 
@@ -45,24 +47,27 @@ const LoginModal: React.FC<LoginModalProps> = ({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Login">
             <form onSubmit={handleSubmit} className="auth-form">
-                <input
-                    name="email"
-                    value={formData.email}
-                    placeholder="email"
-                    onChange={handleChange}
-                />
+                <div className="form-group">
+                    <input
+                        name="email"
+                        value={formData.email}
+                        placeholder="email"
+                        onChange={handleChange}
+                    />
+                </div>
 
-                <input
-                    type="password"
-                    placeholder="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
+                <div className="form-group">
+                    <input
+                        type="password"
+                        placeholder="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                </div>
 
                 {error && <p className="error">{error}</p>}
-                <div>
-
+                <div className="login-form-button">
                     <button type="submit" className="submit-btn">Login</button>
                 </div>
 
