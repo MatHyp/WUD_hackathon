@@ -31,10 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
+
+    let username = prompt("Username")
+    if (!username) {
+      username = ""
+    }
+    
+    // // Simulate API call
     const mockUser = {
       id: "1",
-      name: "Jan Kowalski",
+      name: username,
       email: email,
     }
     setUser(mockUser)
