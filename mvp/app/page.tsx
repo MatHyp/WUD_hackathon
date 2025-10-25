@@ -13,6 +13,7 @@ import {
   X,
   Bike,
   Banknote,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HomeTab from "@/components/home-tab";
@@ -24,6 +25,7 @@ import PlacesTab from "@/components/places-tab";
 import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
 import Image from "next/image";
+import SurveyTab from "@/components/survey-tab";
 
 import logo from "../img/images.png";
 export default function KartaMiejskaApp() {
@@ -75,6 +77,9 @@ export default function KartaMiejskaApp() {
           <TabsContent value="profile" className="mt-0">
             <ProfileTab />
           </TabsContent>
+          <TabsContent value="survey" className="mt-0">
+            <SurveyTab />
+          </TabsContent>
 
           {isMoreMenuOpen && (
             <div
@@ -120,6 +125,14 @@ export default function KartaMiejskaApp() {
                     >
                       <Banknote className="w-6 h-6" />
                       <span>Podatki</span>
+                    </Button>
+                    <Button
+                      variant={activeTab === "survey" ? "default" : "outline"}
+                      className="h-20 flex-col gap-2"
+                      onClick={() => handleMoreMenuSelect("survey")}
+                    >
+                      <ClipboardList className="w-6 h-6" />
+                      <span>Ankieta</span>
                     </Button>
                     <Button
                       variant={activeTab === "profile" ? "default" : "outline"}
