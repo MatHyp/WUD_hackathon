@@ -69,6 +69,7 @@ export default function EventsTab() {
   const [ticketCount, setTicketCount] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
+  const [activeCategory, setActiveCategory] = useState("Wszystkie")
 
   const handlePurchaseEventTicket = () => {
     if (!selectedEvent) return
@@ -82,6 +83,11 @@ export default function EventsTab() {
     setTicketCount(1)
   }
 
+  const filteredEvents =
+    activeCategory === "Wszystkie"
+      ? events
+      : events.filter((event) => event.category === activeCategory)
+
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-2">
@@ -93,7 +99,8 @@ export default function EventsTab() {
         {["Wszystkie", "Muzyka", "Sztuka", "Teatr", "Sport", "Jedzenie"].map((cat) => (
           <Badge
             key={cat}
-            variant={cat === "Wszystkie" ? "default" : "outline"}
+            onClick={() => setActiveCategory(cat)}
+            variant={cat === activeCategory ? "default" : "outline"}
             className="cursor-pointer whitespace-nowrap"
           >
             {cat}
@@ -102,7 +109,7 @@ export default function EventsTab() {
       </div>
 
       <div className="space-y-4">
-        {events.map((event) => (
+        {filteredEvents.map((event) => (
           <Card key={event.id} className="overflow-hidden hover:bg-accent transition-colors">
             <div className="flex flex-col sm:flex-row">
               <div className="w-full sm:w-40 h-40 sm:h-auto bg-muted flex-shrink-0">
