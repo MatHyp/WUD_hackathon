@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Users, Ticket } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, MapPin, Users, Ticket } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 const events = [
   {
@@ -62,58 +62,73 @@ const events = [
     category: "Teatr",
     available: 35,
   },
-]
+];
 
 export default function EventsTab() {
-  const [selectedEvent, setSelectedEvent] = useState<(typeof events)[0] | null>(null)
-  const [ticketCount, setTicketCount] = useState(1)
-  const [isOpen, setIsOpen] = useState(false)
-  const { toast } = useToast()
-  const [activeCategory, setActiveCategory] = useState("Wszystkie")
+  const [selectedEvent, setSelectedEvent] = useState<(typeof events)[0] | null>(
+    null
+  );
+  const [ticketCount, setTicketCount] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+  const [activeCategory, setActiveCategory] = useState("Wszystkie");
 
   const handlePurchaseEventTicket = () => {
-    if (!selectedEvent) return
+    if (!selectedEvent) return;
 
     toast({
       title: "Bilet zakupiony!",
       description: `Zakupiono ${ticketCount} bilet(ów) na ${selectedEvent.title}. Sprawdź email po szczegóły.`,
-    })
+    });
 
-    setIsOpen(false)
-    setTicketCount(1)
-  }
+    setIsOpen(false);
+    setTicketCount(1);
+  };
 
   const filteredEvents =
     activeCategory === "Wszystkie"
       ? events
-      : events.filter((event) => event.category === activeCategory)
+      : events.filter((event) => event.category === activeCategory);
 
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-balance">Wydarzenia w mieście</h2>
-        <p className="text-muted-foreground text-pretty">Odkryj i kup bilety na najlepsze wydarzenia</p>
+        <h2 className="text-2xl font-bold text-balance">
+          Wydarzenia w mieście
+        </h2>
+        <p className="text-muted-foreground text-pretty">
+          Odkryj i kup bilety na najlepsze wydarzenia
+        </p>
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
-        {["Wszystkie", "Muzyka", "Sztuka", "Teatr", "Sport", "Jedzenie"].map((cat) => (
-          <Badge
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            variant={cat === activeCategory ? "default" : "outline"}
-            className="cursor-pointer whitespace-nowrap"
-          >
-            {cat}
-          </Badge>
-        ))}
+        {["Wszystkie", "Muzyka", "Sztuka", "Teatr", "Sport", "Jedzenie"].map(
+          (cat) => (
+            <Badge
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              variant={cat === activeCategory ? "default" : "outline"}
+              className="cursor-pointer whitespace-nowrap"
+            >
+              {cat}
+            </Badge>
+          )
+        )}
       </div>
 
       <div className="space-y-4">
         {filteredEvents.map((event) => (
-          <Card key={event.id} className="overflow-hidden hover:bg-accent transition-colors">
+          <Card
+            key={event.id}
+            className="overflow-hidden hover:bg-accent transition-colors"
+          >
             <div className="flex flex-col sm:flex-row">
               <div className="w-full sm:w-40 h-40 sm:h-auto bg-muted flex-shrink-0">
-                <img src={event.image || "/placeholder.svg"} alt={event.title} className="w-full h-full object-cover" />
+                <img
+                  src={event.image || "/placeholder.svg"}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex-1">
                 <CardHeader className="pb-3">
@@ -122,7 +137,9 @@ export default function EventsTab() {
                       <Badge variant="secondary" className="mb-2">
                         {event.category}
                       </Badge>
-                      <CardTitle className="text-lg text-balance">{event.title}</CardTitle>
+                      <CardTitle className="text-lg text-balance">
+                        {event.title} ddd
+                      </CardTitle>
                     </div>
                   </div>
                 </CardHeader>
@@ -151,8 +168,8 @@ export default function EventsTab() {
                       <DialogTrigger asChild>
                         <Button
                           onClick={() => {
-                            setSelectedEvent(event)
-                            setIsOpen(true)
+                            setSelectedEvent(event);
+                            setIsOpen(true);
                           }}
                         >
                           <Ticket className="w-4 h-4 mr-2" />
@@ -161,7 +178,9 @@ export default function EventsTab() {
                       </DialogTrigger>
                       <DialogContent className="max-w-md">
                         <DialogHeader>
-                          <DialogTitle className="text-balance">{selectedEvent?.title}</DialogTitle>
+                          <DialogTitle className="text-balance">
+                            {selectedEvent?.title}
+                          </DialogTitle>
                           <DialogDescription>
                             {selectedEvent?.date} • {selectedEvent?.time}
                           </DialogDescription>
@@ -175,7 +194,11 @@ export default function EventsTab() {
                               min="1"
                               max="10"
                               value={ticketCount}
-                              onChange={(e) => setTicketCount(Number.parseInt(e.target.value) || 1)}
+                              onChange={(e) =>
+                                setTicketCount(
+                                  Number.parseInt(e.target.value) || 1
+                                )
+                              }
                             />
                           </div>
                           <div className="bg-muted rounded-lg p-4 space-y-2">
@@ -192,7 +215,11 @@ export default function EventsTab() {
                               <span>{ticketCount * 45} zł</span>
                             </div>
                           </div>
-                          <Button className="w-full" size="lg" onClick={handlePurchaseEventTicket}>
+                          <Button
+                            className="w-full"
+                            size="lg"
+                            onClick={handlePurchaseEventTicket}
+                          >
                             Przejdź do płatności
                           </Button>
                         </div>
@@ -206,5 +233,5 @@ export default function EventsTab() {
         ))}
       </div>
     </div>
-  )
+  );
 }

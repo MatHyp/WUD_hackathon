@@ -177,7 +177,7 @@ export default function KartaMiejskaApp() {
               className="flex-col gap-1 h-full data-[state=active]:text-primary"
             >
               <Calendar className="w-5 h-5" />
-              <span className="text-xs">Events</span>
+              <span className="text-xs">Wydarzenia</span>
             </TabsTrigger>
             <TabsTrigger
               value="news"
