@@ -74,7 +74,7 @@ export function VehiclesTab() {
       type: "bike",
       battery: 100,
       distance: "0.2 km",
-      location: "ul. Piotrkowska 120",
+      location: "ul. Narutowicza 120",
       pricePerMinute: 0.5,
     },
     {
@@ -82,7 +82,7 @@ export function VehiclesTab() {
       type: "bike",
       battery: 100,
       distance: "0.5 km",
-      location: "ul. Narutowicza 45",
+      location: "ul. Cyfrowa 6",
       pricePerMinute: 0.5,
     },
     {
@@ -90,7 +90,7 @@ export function VehiclesTab() {
       type: "bike",
       battery: 100,
       distance: "0.6 km",
-      location: "Park Poniatowskiego",
+      location: "ul. Cyfrowa 6",
       pricePerMinute: 0.5,
     },
   ];

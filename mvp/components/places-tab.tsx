@@ -68,7 +68,7 @@ export default function PlacesTab() {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-balance">Odkryj miasto</h2>
         <p className="text-muted-foreground text-pretty">
-          Najciekawsze miejsca w Krakowie
+          Najciekawsze miejsca w Szczecinie
         </p>
       </div>
 
