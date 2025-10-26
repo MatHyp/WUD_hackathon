@@ -23,7 +23,7 @@ const events = [
     title: "Koncert Symfoniczny",
     date: "15 Sty 2025",
     time: "19:00",
-    location: "Filharmonia Krakowska",
+    location: "Filharmonia Szczecin",
     price: "od 45 zł",
     image: "/symphony-orchestra-concert-hall.jpg",
     category: "Muzyka",
@@ -34,7 +34,7 @@ const events = [
     title: "Wystawa Sztuki Współczesnej",
     date: "18 Sty 2025",
     time: "10:00",
-    location: "MOCAK",
+    location: "Galeria Miejska",
     price: "od 20 zł",
     image: "/modern-art-gallery.png",
     category: "Sztuka",
@@ -45,7 +45,7 @@ const events = [
     title: "Festiwal Foodtrucków",
     date: "20 Sty 2025",
     time: "12:00",
-    location: "Błonia Krakowskie",
+    location: "Jasne Błonia",
     price: "Wstęp wolny",
     image: "/food-truck-festival-outdoor.jpg",
     category: "Jedzenie",
@@ -56,7 +56,7 @@ const events = [
     title: "Spektakl Teatralny",
     date: "22 Sty 2025",
     time: "18:30",
-    location: "Teatr Stary",
+    location: "Teatr Narodowy",
     price: "od 60 zł",
     image: "/theater-stage-performance.jpg",
     category: "Teatr",
@@ -138,7 +138,7 @@ export default function EventsTab() {
                         {event.category}
                       </Badge>
                       <CardTitle className="text-lg text-balance">
-                        {event.title} ddd
+                        {event.title}
                       </CardTitle>
                     </div>
                   </div>

@@ -40,6 +40,9 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
 
+import customIconUrl from "../img/marker-bike.png"; // if in /public
+// import L from "leaflet";
+
 interface Vehicle {
   id: string;
   type: "bike" | "scooter";
@@ -172,7 +175,7 @@ export function VehiclesTab() {
           <div>
             <div className="relative h-64 border-b border-gray-700 overflow-hidden">
               <MapContainer
-                center={[51.7592, 19.456]} // Łódź
+                center={[53.4504, 14.536]} // Łódź
                 zoom={14}
                 scrollWheelZoom={false}
                 className="absolute inset-0 h-full w-full z-0 rounded-none"
@@ -187,10 +190,10 @@ export function VehiclesTab() {
                     key={vehicle.id}
                     position={
                       vehicle.id === "B001"
-                        ? [51.7592, 19.456]
+                        ? [53.4504, 14.536]
                         : vehicle.id === "B002"
-                        ? [51.757, 19.46]
-                        : [51.761, 19.45]
+                        ? [53.4504, 14.536]
+                        : [53.4504, 14.536]
                     }
                   >
                     <Popup>
@@ -211,7 +214,7 @@ export function VehiclesTab() {
 
         {/* Scanner Button */}
         <div className="p-4 bg-gray-900/50 border-b border-gray-800">
-          <Button
+          {/* <Button
             onClick={handleScan}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white"
             size="lg"
@@ -219,7 +222,7 @@ export function VehiclesTab() {
           >
             <QrCode className="mr-2 h-5 w-5" />
             Skanuj kod QR
-          </Button>
+          </Button> */}
         </div>
 
         {/* Filter Tabs */}

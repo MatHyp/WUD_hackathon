@@ -24,9 +24,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-  setActiveTab: (value: string) => void
-}
-{/*}
+  setActiveTab: (value: string) => void;
+};
+{
+  /*}
 export function HomeComponent({ setActiveTab }: Props) {
   return (
     <div className="mt-4">
@@ -35,27 +36,30 @@ export function HomeComponent({ setActiveTab }: Props) {
       </Button>
     </div>
   )
-}*/}
+}*/
+}
 
 export default function HomeTab({ setActiveTab }: Props) {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
-  const [balance, setBalance] = useState(45.5)
-  const [topUpAmount, setTopUpAmount] = useState(0)
-  const [isOpen, setIsOpen] = useState(false)
-  const { toast } = useToast()
+  const [balance, setBalance] = useState(45.5);
+  const [topUpAmount, setTopUpAmount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleTopUp = () => {
     if (topUpAmount > 0) {
-      setBalance((prev) => prev + topUpAmount)
+      setBalance((prev) => prev + topUpAmount);
       toast({
         title: "Doładowanie zakończone",
-        description: `Twoje saldo zostało zwiększone o ${topUpAmount.toFixed(2)} zł.`,
-      })
-      setTopUpAmount(0)
-      setIsOpen(false)
+        description: `Twoje saldo zostało zwiększone o ${topUpAmount.toFixed(
+          2
+        )} zł.`,
+      });
+      setTopUpAmount(0);
+      setIsOpen(false);
     }
-  }
+  };
 
   return (
     <div className="p-4 space-y-6">
@@ -112,7 +116,10 @@ export default function HomeTab({ setActiveTab }: Props) {
       </Card>
 
       <div className="grid grid-cols-2 gap-4">
-        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("tickets")}>
+        <Card
+          className="hover:bg-accent transition-colors cursor-pointer"
+          onClick={() => setActiveTab("tickets")}
+        >
           <CardHeader className="pb-3">
             <Ticket className="w-8 h-8 text-primary mb-2" />
             <a href=""></a>
@@ -125,7 +132,10 @@ export default function HomeTab({ setActiveTab }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("events")}>
+        <Card
+          className="hover:bg-accent transition-colors cursor-pointer"
+          onClick={() => setActiveTab("events")}
+        >
           <CardHeader className="pb-3">
             <Calendar className="w-8 h-8 text-primary mb-2" />
             <CardTitle className="text-base">Events</CardTitle>
@@ -137,17 +147,25 @@ export default function HomeTab({ setActiveTab }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("news")}>
+        <Card
+          className="hover:bg-accent transition-colors cursor-pointer"
+          onClick={() => setActiveTab("news")}
+        >
           <CardHeader className="pb-3">
             <TrendingUp className="w-8 h-8 text-primary mb-2" />
             <CardTitle className="text-base">Awarie</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground">Sprawdź sytuacje w mieście</p>
+            <p className="text-xs text-muted-foreground">
+              Sprawdź sytuacje w mieście
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("places")}>
+        <Card
+          className="hover:bg-accent transition-colors cursor-pointer"
+          onClick={() => setActiveTab("places")}
+        >
           <CardHeader className="pb-3">
             <MapPin className="w-8 h-8 text-primary mb-2" />
             <CardTitle className="text-base">Miejsca</CardTitle>
