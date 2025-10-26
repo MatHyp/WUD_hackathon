@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -21,8 +20,9 @@ import {
   Zap,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import dynamic from "next/dynamic";
+
+// Remove the leaflet.css import from here and handle it differently
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -39,9 +39,6 @@ const Marker = dynamic(
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
-
-import customIconUrl from "../img/marker-bike.png"; // if in /public
-// import L from "leaflet";
 
 interface Vehicle {
   id: string;
@@ -66,7 +63,44 @@ export function VehiclesTab() {
   );
   const [scannerOpen, setScannerOpen] = useState(false);
   const [activeRental, setActiveRental] = useState<ActiveRental | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const { toast } = useToast();
+
+  // Load Leaflet CSS dynamically
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Check if Leaflet CSS is already loaded
+      if (!document.querySelector('link[href*="leaflet"]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        link.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+        link.crossOrigin = "";
+        document.head.appendChild(link);
+      }
+
+      // Configure Leaflet icons after CSS is loaded
+      const configureLeaflet = async () => {
+        const L = await import("leaflet");
+
+        // Fix for default marker icons
+        delete (L.Icon.Default.prototype as any)._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+          iconUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+          shadowUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        });
+
+        setMapReady(true);
+      };
+
+      // Small delay to ensure CSS is loaded
+      setTimeout(configureLeaflet, 100);
+    }
+  }, []);
 
   const vehicles: Vehicle[] = [
     {
@@ -101,7 +135,6 @@ export function VehiclesTab() {
 
   const handleScan = () => {
     setScannerOpen(true);
-    // Simulate QR code scan after 2 seconds
     setTimeout(() => {
       const vehicle = vehicles[Math.floor(Math.random() * vehicles.length)];
       setScannerOpen(false);
@@ -119,7 +152,7 @@ export function VehiclesTab() {
     });
     toast({
       title: "Wypożyczenie rozpoczęte!",
-      description: `${vehicle.type === "bike"} ${
+      description: `${vehicle.type === "bike" ? "Rower" : "Hulajnoga"} ${
         vehicle.id
       } został odblokowany.`,
     });
@@ -127,7 +160,7 @@ export function VehiclesTab() {
 
   const endRental = () => {
     if (activeRental) {
-      const duration = 15; // Mock duration in minutes
+      const duration = 15;
       const cost = duration * (activeRental.type === "bike" ? 0.5 : 0.7);
       toast({
         title: "Wypożyczenie zakończone",
@@ -149,11 +182,11 @@ export function VehiclesTab() {
               ) : (
                 <Scooter className="h-6 w-6" />
               )}
-
               <div>
                 <p className="font-semibold">Aktywne wypożyczenie</p>
                 <p className="text-sm opacity-90">
-                  {activeRental.type === "bike"} {activeRental.vehicleId}
+                  {activeRental.type === "bike" ? "Rower" : "Hulajnoga"}{" "}
+                  {activeRental.vehicleId}
                 </p>
               </div>
             </div>
@@ -170,51 +203,46 @@ export function VehiclesTab() {
       )}
 
       <div className="flex-1 overflow-y-auto pb-20">
-        {/* Map Placeholder */}
+        {/* Map */}
         <div className="h-64 border-b border-gray-700">
-          <div>
-            <div className="relative h-64 border-b border-gray-700 overflow-hidden">
-              <MapContainer
-                center={[53.4504, 14.536]} // Łódź
-                zoom={14}
-                scrollWheelZoom={false}
-                className="absolute inset-0 h-full w-full z-0 rounded-none"
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-
-                {vehicles.map((vehicle) => (
-                  <Marker
-                    key={vehicle.id}
-                    position={
-                      vehicle.id === "B001"
-                        ? [53.4504, 14.536]
-                        : vehicle.id === "B002"
-                        ? [53.4504, 14.536]
-                        : [53.4504, 14.536]
-                    }
-                  >
-                    <Popup>
-                      <div className="text-sm">
-                        <p className="font-semibold">{vehicle.id}</p>
-                        <p>{vehicle.location}</p>
-                        <p className="text-teal-500 font-medium">
-                          {vehicle.pricePerMinute.toFixed(2)} zł/min
-                        </p>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+          {mapReady ? (
+            <MapContainer
+              center={[53.4504, 14.536]}
+              zoom={14}
+              scrollWheelZoom={false}
+              className="h-full w-full"
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              {vehicles.map((vehicle, index) => (
+                <Marker
+                  key={vehicle.id}
+                  position={[53.4504 + index * 0.001, 14.536 + index * 0.001]}
+                >
+                  <Popup>
+                    <div className="text-sm">
+                      <p className="font-semibold">{vehicle.id}</p>
+                      <p>{vehicle.location}</p>
+                      <p className="text-teal-500 font-medium">
+                        {vehicle.pricePerMinute.toFixed(2)} zł/min
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          ) : (
+            <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+              <p>Ładowanie mapy...</p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Scanner Button */}
         <div className="p-4 bg-gray-900/50 border-b border-gray-800">
-          {/* <Button
+          <Button
             onClick={handleScan}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white"
             size="lg"
@@ -222,7 +250,7 @@ export function VehiclesTab() {
           >
             <QrCode className="mr-2 h-5 w-5" />
             Skanuj kod QR
-          </Button> */}
+          </Button>
         </div>
 
         {/* Filter Tabs */}
@@ -266,21 +294,8 @@ export function VehiclesTab() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex gap-3 flex-1">
-                  <div
-                    className={`p-3 rounded  ${
-                      vehicle.type === "bike"
-                        ? "bg-blue-500/10"
-                        : "bg-purple-500/10"
-                    }`}
-                  >
-                    {
-                      <Bike
-                        className={`h-6 w-6 
-                            "text-blue-100"
-                             "text-purple-400"
-                        }`}
-                      />
-                    }
+                  <div className="p-3 rounded bg-blue-500/10">
+                    <Bike className="h-6 w-6 text-blue-400" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -292,15 +307,7 @@ export function VehiclesTab() {
                         <span>{vehicle.distance}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Battery
-                          className={`h-3 w-3 ${
-                            vehicle.battery > 80
-                              ? "text-green-400"
-                              : vehicle.battery > 50
-                              ? "text-yellow-400"
-                              : "text-red-400"
-                          }`}
-                        />
+                        <Battery className="h-3 w-3 text-green-400" />
                         <span>{vehicle.battery}%</span>
                       </div>
                     </div>
@@ -337,7 +344,6 @@ export function VehiclesTab() {
               <span>Rower:</span>
               <span className="text-black">0.50 zł/min</span>
             </div>
-
             <div className="flex justify-between text-black-400 pt-2 border-t border-gray-700">
               <span>Opłata za odblokowanie:</span>
               <span className="text-black">1.00 zł</span>
@@ -360,7 +366,6 @@ export function VehiclesTab() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <QrCode className="h-20 w-20 text-teal-500 animate-pulse" />
               </div>
-              {/* Scanner animation */}
               <div className="absolute inset-x-0 top-0 h-1 bg-teal-500 animate-scan" />
             </div>
             <p className="text-gray-400 text-sm mt-4">Skanowanie...</p>
