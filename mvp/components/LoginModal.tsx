@@ -14,6 +14,10 @@ interface LoginData {
     password: string;
 }
 
+function login(email: string, password: string) {
+    localStorage.setItem('user', JSON.stringify({ email: email, password: password }))
+}
+
 const LoginModal: React.FC<LoginModalProps> = ({
     isOpen,
     onClose,
@@ -47,29 +51,36 @@ const LoginModal: React.FC<LoginModalProps> = ({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Login">
             <form onSubmit={handleSubmit} className="auth-form">
-                <div className="form-group">
-                    <input
-                        name="email"
-                        value={formData.email}
-                        placeholder="email"
-                        onChange={handleChange}
-                    />
-                </div>
+                <center>
 
-                <div className="form-group">
-                    <input
-                        type="password"
-                        placeholder="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <input
+                            name="email"
+                            value={formData.email}
+                            placeholder="email"
+                            onChange={handleChange}
+                        />
+                    </div>
+                </center>
+                <center>
 
-                {error && <p className="error">{error}</p>}
-                <div className="login-form-button">
-                    <button type="submit" className="submit-btn">Login</button>
-                </div>
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            placeholder="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </center>
+
+                <center>
+                    {error && <p className="error">{error}</p>}
+                    <div className="login-form-button">
+                        <button type="submit" className="submit-btn">Login</button>
+                    </div>
+                </center>
 
                 <p className="switch-text">
                     Don’t have an account?{" "}

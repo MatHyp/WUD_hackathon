@@ -66,8 +66,15 @@
     border-radius: 4px;
     cursor: pointer;
     width: 25%;
+    margin: 15px;
+    width: 13rem;
 }
 
 .submit-btn:hover {
     background-color: #0056b3;
+}
+
+input {
+    border:1px solid black;
+    border-radius: 5px;
 }
