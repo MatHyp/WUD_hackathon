@@ -7,9 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Ticket, Calendar, TrendingUp, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 type Props = {
   setActiveTab: (value: string) => void
@@ -27,6 +39,23 @@ export function HomeComponent({ setActiveTab }: Props) {
 
 export default function HomeTab({ setActiveTab }: Props) {
   const { user } = useAuth()
+
+  const [balance, setBalance] = useState(45.5)
+  const [topUpAmount, setTopUpAmount] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
+  const { toast } = useToast()
+
+  const handleTopUp = () => {
+    if (topUpAmount > 0) {
+      setBalance((prev) => prev + topUpAmount)
+      toast({
+        title: "Doładowanie zakończone",
+        description: `Twoje saldo zostało zwiększone o ${topUpAmount.toFixed(2)} zł.`,
+      })
+      setTopUpAmount(0)
+      setIsOpen(false)
+    }
+  }
 
   return (
     <div className="p-4 space-y-6">
@@ -48,9 +77,36 @@ export default function HomeTab({ setActiveTab }: Props) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Saldo</p>
-              <p className="text-3xl font-bold">45.50 zł</p>
+              <p className="text-3xl font-bold">{balance.toFixed(2)} zł</p>
             </div>
-            <Button>Doładuj</Button>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button>Doładuj</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-sm">
+                <DialogHeader>
+                  <DialogTitle>Doładuj konto</DialogTitle>
+                  <DialogDescription>
+                    Wpisz kwotę, którą chcesz dodać do swojego salda
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Kwota</Label>
+                    <Input
+                      id="amount"
+                      type="number"
+                      min="1"
+                      value={topUpAmount}
+                      onChange={(e) => setTopUpAmount(Number(e.target.value))}
+                    />
+                  </div>
+                  <Button className="w-full" onClick={handleTopUp}>
+                    Potwierdź doładowanie
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardContent>
       </Card>
@@ -87,7 +143,7 @@ export default function HomeTab({ setActiveTab }: Props) {
             <CardTitle className="text-base">Awarie</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground">Sprawdź połączenia</p>
+            <p className="text-xs text-muted-foreground">Sprawdź sytuacje w mieście</p>
           </CardContent>
         </Card>
 
