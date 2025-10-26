@@ -25,6 +25,7 @@ import PlacesTab from "@/components/places-tab";
 import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
 import Image from "next/image";
+import SurveyTab from "@/components/survey-tab";
 
 import logo from "../img/images.png";
 import LoginModal from "@/components/LoginModal";
