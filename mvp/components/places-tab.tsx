@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Star } from "lucide-react"
@@ -49,6 +50,13 @@ const places = [
 ]
 
 export default function PlacesTab() {
+  const [activeCategory, setActiveCategory] = useState("Wszystkie")
+
+  const filteredPlaces =
+    activeCategory === "Wszystkie"
+      ? places
+      : places.filter((places) => places.category === activeCategory)
+
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-2">
@@ -60,16 +68,26 @@ export default function PlacesTab() {
         {["Wszystkie", "Zabytki", "Muzea", "Parki", "Restauracje", "Rozrywka"].map((cat) => (
           <Badge
             key={cat}
+            onClick={() => setActiveCategory(cat)}
+            variant={cat === activeCategory ? "default" : "outline"}
+            className="cursor-pointer whitespace-nowrap"
+          >
+            {cat}
+          </Badge>
+        ))}{/*}
+        {["Wszystkie", "Zabytki", "Muzea", "Parki", "Restauracje", "Rozrywka"].map((cat) => (
+          <Badge
+            key={cat}
             variant={cat === "Wszystkie" ? "default" : "outline"}
             className="cursor-pointer whitespace-nowrap"
           >
             {cat}
           </Badge>
-        ))}
+        ))}*/}
       </div>
 
       <div className="space-y-4">
-        {places.map((place) => (
+        {filteredPlaces.map((place) => (
           <Card key={place.id} className="overflow-hidden hover:bg-accent transition-colors">
             <div className="w-full h-48 bg-muted">
               <img src={place.image || "/placeholder.svg"} alt={place.name} className="w-full h-full object-cover" />
