@@ -138,7 +138,7 @@ export default function HomeTab({ setActiveTab }: Props) {
         >
           <CardHeader className="pb-3">
             <Calendar className="w-8 h-8 text-primary mb-2" />
-            <CardTitle className="text-base">Events</CardTitle>
+            <CardTitle className="text-base">Wydarzenia</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground">

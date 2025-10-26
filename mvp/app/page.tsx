@@ -26,22 +26,26 @@ import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
 import Image from "next/image";
 import SurveyTab from "@/components/survey-tab";
-import { usePreferences } from "@/lib/preferences-context"
+import { usePreferences } from "@/lib/preferences-context";
 
 import logo from "../img/images.png";
 import LoginModal from "@/components/LoginModal";
 export default function KartaMiejskaApp() {
   const [activeTab, setActiveTab] = useState("home");
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ username: string, password: string } | undefined>(undefined);
+  const [user, setUser] = useState<
+    { username: string; password: string } | undefined
+  >(undefined);
 
-  const { preferences } = usePreferences()
+  const { preferences } = usePreferences();
 
   const handleMoreMenuSelect = (tab: string) => {
     setActiveTab(tab);
     setIsMoreMenuOpen(false);
   };
-  const [modalType, setModalType] = useState<"register" | "login" | null>("login");
+  const [modalType, setModalType] = useState<"register" | "login" | null>(
+    "login"
+  );
 
   const allTabs = [
     { value: "home", label: "Home", icon: Home },
@@ -53,32 +57,34 @@ export default function KartaMiejskaApp() {
     { value: "vehicles", label: "Pojazdy", icon: Bike },
     { value: "profile", label: "Profil", icon: User },
     { value: "survey", label: "Ankieta", icon: ClipboardList },
-  ]
+  ];
 
   // preferencje z ankiety (pytanie 1)
-  const selected = preferences[1] || []
+  const selected = preferences[1] || [];
 
   // dolny panel = tylko wybrane
-  const bottomTabs = allTabs.filter(tab => selected.includes(tab.label))
+  const bottomTabs = allTabs.filter((tab) => selected.includes(tab.label));
 
   // reszta trafia do „Więcej”
-  const moreTabs = allTabs.filter(tab => !selected.includes(tab.label))
+  const moreTabs = allTabs.filter((tab) => !selected.includes(tab.label));
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-50 bg-card border-b border-border px-4 py-4">
-        <div className="flex items-center justify-between max-w-screen-xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Image src={logo} alt="Logo" width={32} height={32} />
+      <a href="/">
+        <header className="sticky top-0 z-50 bg-card border-b border-border px-4 py-4">
+          <div className="flex items-center justify-between max-w-screen-xl mx-auto">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Image src={logo} alt="Logo" width={32} height={32} />
+              </div>
+              <h1 className="text-xl font-bold text-balance">Karta Miejska</h1>
             </div>
-            <h1 className="text-xl font-bold text-balance">Karta Miejska</h1>
+            <div className="text-xs text-muted-foreground">Szczecin</div>
           </div>
-          <div className="text-xs text-muted-foreground">Szczecin</div>
-        </div>
-      </header>
+        </header>
+      </a>
 
-{/*
+      {/*
        <LoginModal
         isOpen={modalType === "login"}
         onClose={() => setModalType(null)}
@@ -140,7 +146,9 @@ export default function KartaMiejskaApp() {
                     {moreTabs.map((tab) => (
                       <Button
                         key={tab.value}
-                        variant={activeTab === tab.value ? "default" : "outline"}
+                        variant={
+                          activeTab === tab.value ? "default" : "outline"
+                        }
                         className="h-20 flex-col gap-2"
                         onClick={() => handleMoreMenuSelect(tab.value)}
                       >
@@ -185,9 +193,5 @@ export default function KartaMiejskaApp() {
         </Tabs>
       </main>
     </div>
-
-
   );
 }
-
-
