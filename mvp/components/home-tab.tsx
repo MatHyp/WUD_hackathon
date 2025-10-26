@@ -183,24 +183,10 @@ export default function HomeTab({ setActiveTab }: Props) {
         <CardContent className="space-y-3">
           {[
             {
-              line: "128",
+              line: "61",
               from: "Dworzec Główny",
-              to: "Nowy Kleparz",
+              to: "Cukrowa",
               time: "10:30",
-              price: "4.60 zł",
-            },
-            {
-              line: "50",
-              from: "Rondo Mogilskie",
-              to: "Bronowice",
-              time: "09:15",
-              price: "4.60 zł",
-            },
-            {
-              line: "4",
-              from: "Plac Inwalidów",
-              to: "Krowodrza",
-              time: "Wczoraj",
               price: "4.60 zł",
             },
           ].map((ride, i) => (
