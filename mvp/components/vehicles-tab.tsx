@@ -22,7 +22,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 
-// Remove the leaflet.css import from here and handle it differently
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),

@@ -170,7 +170,6 @@ export default function PlacesTab() {
                 {selectedPlace.discount && (
                   <p className="text-primary"><strong>Oferta:</strong> {selectedPlace.discount}</p>
                 )}
-                {/* 🔄 dodatkowy opis */}
                 {selectedPlace.details && (
                   <p className="text-muted-foreground">{selectedPlace.details}</p>
                 )}

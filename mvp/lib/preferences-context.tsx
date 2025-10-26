@@ -13,7 +13,7 @@ const PreferencesContext = createContext<{
 
 export function PreferencesProvider({ children }: { children: React.ReactNode }) {
     const [preferences, setPreferences] = useState<Preferences>({
-        1: ["Home", "Bilety", "Wydarzenia", "Awarie"], // 🔄 domyślne 4 opcje
+        1: ["Home", "Bilety", "Wydarzenia", "Awarie"], 
     })
     return (
         <PreferencesContext.Provider value={{ preferences, setPreferences }}>
