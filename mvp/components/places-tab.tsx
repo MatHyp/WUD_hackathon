@@ -1,32 +1,30 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { MapPin, Star } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
 const places = [
-  // {
-  //   id: 1,
-  //   name: "Wawel",
-  //   description: "Historyczny zamek królewski i katedra",
-  //   image: "/wawel-castle-krakow.jpg",
-  //   category: "Zabytki",
-  //   rating: 4.8,
-  //   distance: "1.2 km",
-  //   discount: "20% zniżki z Kartą Miejską",
-  // },
   {
     id: 2,
     name: "Muzeum Narodowe",
     description: "Największe muzeum sztuki w Szczecinie",
+    details: "Muzeum Narodowe w Szczecinie to instytucja kultury o bogatej kolekcji sztuki polskiej i europejskiej. Oprócz wystaw stałych organizuje liczne wystawy czasowe, warsztaty i wydarzenia edukacyjne.",
     image: "/national-museum-art-gallery.jpg",
     category: "Muzea",
     rating: 4.6,
@@ -37,6 +35,7 @@ const places = [
     id: 3,
     name: "Jasne Błonia",
     description: "Pierścień parków",
+    details: "Jasne Błonia to rozległy teren zielony w centrum Szczecina, idealny na spacery, pikniki i wydarzenia plenerowe. Znajduje się tu słynna aleja platanów oraz pomnik Jana Pawła II.",
     image: "/city-park-green-trees.jpg",
     category: "Parki",
     rating: 4.7,
@@ -45,23 +44,25 @@ const places = [
   },
   {
     id: 4,
-    name: "Stare miasrto",
-    description: "Historyczna dzielnica sszczecina",
+    name: "Stare miasto",
+    description: "Historyczna dzielnica Szczecina",
+    details: "Zabytkowa część miasta, jeszcze z przed II wojny światowej",
     image: "/historic-jewish-quarter-street.jpg",
     category: "Dzielnice",
     rating: 4.9,
     distance: "1.8 km",
     discount: "15% w restauracjach",
   },
-];
+]
 
 export default function PlacesTab() {
-  const [activeCategory, setActiveCategory] = useState("Wszystkie");
+  const [activeCategory, setActiveCategory] = useState("Wszystkie")
+  const [selectedPlace, setSelectedPlace] = useState<any | null>(null)
 
   const filteredPlaces =
     activeCategory === "Wszystkie"
       ? places
-      : places.filter((places) => places.category === activeCategory);
+      : places.filter((p) => p.category === activeCategory)
 
   return (
     <div className="p-4 space-y-6">
@@ -72,15 +73,9 @@ export default function PlacesTab() {
         </p>
       </div>
 
+      {/* Kategorie */}
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
-        {[
-          "Wszystkie",
-          "Zabytki",
-          "Muzea",
-          "Parki",
-          "Restauracje",
-          "Rozrywka",
-        ].map((cat) => (
+        {["Wszystkie", "Zabytki", "Muzea", "Parki", "Restauracje", "Rozrywka"].map((cat) => (
           <Badge
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -90,18 +85,9 @@ export default function PlacesTab() {
             {cat}
           </Badge>
         ))}
-        {/*}
-        {["Wszystkie", "Zabytki", "Muzea", "Parki", "Restauracje", "Rozrywka"].map((cat) => (
-          <Badge
-            key={cat}
-            variant={cat === "Wszystkie" ? "default" : "outline"}
-            className="cursor-pointer whitespace-nowrap"
-          >
-            {cat}
-          </Badge>
-        ))}*/}
       </div>
 
+      {/* Lista miejsc */}
       <div className="space-y-4">
         {filteredPlaces.map((place) => (
           <Card
@@ -151,13 +137,48 @@ export default function PlacesTab() {
                   {place.discount}
                 </Badge>
               )}
-              <Button variant="outline" className="w-full bg-transparent">
+              <Button
+                variant="outline"
+                className="w-full bg-transparent"
+                onClick={() => setSelectedPlace(place)}
+              >
                 Zobacz szczegóły
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Modal szczegółów */}
+      <Dialog open={!!selectedPlace} onOpenChange={() => setSelectedPlace(null)}>
+        <DialogContent>
+          {selectedPlace && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedPlace.name}</DialogTitle>
+                <DialogDescription>{selectedPlace.description}</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                <img
+                  src={selectedPlace.image}
+                  alt={selectedPlace.name}
+                  className="w-full h-48 object-cover rounded"
+                />
+                <p><strong>Kategoria:</strong> {selectedPlace.category}</p>
+                <p><strong>Ocena:</strong> {selectedPlace.rating} ⭐</p>
+                <p><strong>Odległość:</strong> {selectedPlace.distance}</p>
+                {selectedPlace.discount && (
+                  <p className="text-primary"><strong>Oferta:</strong> {selectedPlace.discount}</p>
+                )}
+                {/* 🔄 dodatkowy opis */}
+                {selectedPlace.details && (
+                  <p className="text-muted-foreground">{selectedPlace.details}</p>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
-  );
+  )
 }
