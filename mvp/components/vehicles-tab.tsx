@@ -1,35 +1,69 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Bike, Clover as Scooter, QrCode, MapPin, Battery, Clock, Zap } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Bike,
+  Clover as Scooter,
+  QrCode,
+  MapPin,
+  Battery,
+  Clock,
+  Zap,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import dynamic from "next/dynamic";
+
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
+  ssr: false,
+});
 
 interface Vehicle {
-  id: string
-  type: "bike" | "scooter"
-  battery: number
-  distance: string
-  location: string
-  pricePerMinute: number
+  id: string;
+  type: "bike" | "scooter";
+  battery: number;
+  distance: string;
+  location: string;
+  pricePerMinute: number;
 }
 
 interface ActiveRental {
-  vehicleId: string
-  type: "bike" | "scooter"
-  startTime: Date
-  duration: number
-  cost: number
+  vehicleId: string;
+  type: "bike" | "scooter";
+  startTime: Date;
+  duration: number;
+  cost: number;
 }
 
 export function VehiclesTab() {
-  const [selectedType, setSelectedType] = useState<"all" | "bike" | "scooter">("all")
-  const [scannerOpen, setScannerOpen] = useState(false)
-  const [activeRental, setActiveRental] = useState<ActiveRental | null>(null)
-  const { toast } = useToast()
+  const [selectedType, setSelectedType] = useState<"all" | "bike" | "scooter">(
+    "all"
+  );
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [activeRental, setActiveRental] = useState<ActiveRental | null>(null);
+  const { toast } = useToast();
 
   const vehicles: Vehicle[] = [
     {
@@ -40,9 +74,14 @@ export function VehiclesTab() {
       location: "ul. Piotrkowska 120",
       pricePerMinute: 0.5,
     },
-    { id: "S001", type: "scooter", battery: 85, distance: "0.3 km", location: "Plac Wolności", pricePerMinute: 0.7 },
-    { id: "B002", type: "bike", battery: 100, distance: "0.5 km", location: "ul. Narutowicza 45", pricePerMinute: 0.5 },
-    { id: "S002", type: "scooter", battery: 92, distance: "0.4 km", location: "ul. Gdańska 78", pricePerMinute: 0.7 },
+    {
+      id: "B002",
+      type: "bike",
+      battery: 100,
+      distance: "0.5 km",
+      location: "ul. Narutowicza 45",
+      pricePerMinute: 0.5,
+    },
     {
       id: "B003",
       type: "bike",
@@ -51,27 +90,21 @@ export function VehiclesTab() {
       location: "Park Poniatowskiego",
       pricePerMinute: 0.5,
     },
-    {
-      id: "S003",
-      type: "scooter",
-      battery: 78,
-      distance: "0.7 km",
-      location: "ul. Kilińskiego 32",
-      pricePerMinute: 0.7,
-    },
-  ]
+  ];
 
-  const filteredVehicles = vehicles.filter((v) => selectedType === "all" || v.type === selectedType)
+  const filteredVehicles = vehicles.filter(
+    (v) => selectedType === "all" || v.type === selectedType
+  );
 
   const handleScan = () => {
-    setScannerOpen(true)
+    setScannerOpen(true);
     // Simulate QR code scan after 2 seconds
     setTimeout(() => {
-      const vehicle = vehicles[Math.floor(Math.random() * vehicles.length)]
-      setScannerOpen(false)
-      startRental(vehicle)
-    }, 2000)
-  }
+      const vehicle = vehicles[Math.floor(Math.random() * vehicles.length)];
+      setScannerOpen(false);
+      startRental(vehicle);
+    }, 2000);
+  };
 
   const startRental = (vehicle: Vehicle) => {
     setActiveRental({
@@ -80,24 +113,26 @@ export function VehiclesTab() {
       startTime: new Date(),
       duration: 0,
       cost: 0,
-    })
+    });
     toast({
       title: "Wypożyczenie rozpoczęte!",
-      description: `${vehicle.type === "bike" ? "Rower" : "Hulajnoga"} ${vehicle.id} został odblokowany.`,
-    })
-  }
+      description: `${vehicle.type === "bike"} ${
+        vehicle.id
+      } został odblokowany.`,
+    });
+  };
 
   const endRental = () => {
     if (activeRental) {
-      const duration = 15 // Mock duration in minutes
-      const cost = duration * (activeRental.type === "bike" ? 0.5 : 0.7)
+      const duration = 15; // Mock duration in minutes
+      const cost = duration * (activeRental.type === "bike" ? 0.5 : 0.7);
       toast({
         title: "Wypożyczenie zakończone",
         description: `Czas: ${duration} min. Koszt: ${cost.toFixed(2)} zł`,
-      })
-      setActiveRental(null)
+      });
+      setActiveRental(null);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -106,11 +141,16 @@ export function VehiclesTab() {
         <div className="bg-gradient-to-r from-teal-500 to-teal-600 p-4 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {activeRental.type === "bike" ? <Bike className="h-6 w-6" /> : <Scooter className="h-6 w-6" />}
+              {activeRental.type === "bike" ? (
+                <Bike className="h-6 w-6" />
+              ) : (
+                <Scooter className="h-6 w-6" />
+              )}
+
               <div>
                 <p className="font-semibold">Aktywne wypożyczenie</p>
                 <p className="text-sm opacity-90">
-                  {activeRental.type === "bike" ? "Rower" : "Hulajnoga"} {activeRental.vehicleId}
+                  {activeRental.type === "bike"} {activeRental.vehicleId}
                 </p>
               </div>
             </div>
@@ -128,20 +168,45 @@ export function VehiclesTab() {
 
       <div className="flex-1 overflow-y-auto pb-20">
         {/* Map Placeholder */}
-        <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 border-b border-gray-700">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="h-12 w-12 text-teal-500 mx-auto mb-2" />
-              <p className="text-gray-400 text-sm">Miejsce na mapę</p>
-              <p className="text-gray-500 text-xs mt-1">Tutaj będzie wyświetlana mapa z pojazdami</p>
+        <div className="h-64 border-b border-gray-700">
+          <div>
+            <div className="relative h-64 border-b border-gray-700 overflow-hidden">
+              <MapContainer
+                center={[51.7592, 19.456]} // Łódź
+                zoom={14}
+                scrollWheelZoom={false}
+                className="absolute inset-0 h-full w-full z-0 rounded-none"
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+
+                {vehicles.map((vehicle) => (
+                  <Marker
+                    key={vehicle.id}
+                    position={
+                      vehicle.id === "B001"
+                        ? [51.7592, 19.456]
+                        : vehicle.id === "B002"
+                        ? [51.757, 19.46]
+                        : [51.761, 19.45]
+                    }
+                  >
+                    <Popup>
+                      <div className="text-sm">
+                        <p className="font-semibold">{vehicle.id}</p>
+                        <p>{vehicle.location}</p>
+                        <p className="text-teal-500 font-medium">
+                          {vehicle.pricePerMinute.toFixed(2)} zł/min
+                        </p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
             </div>
           </div>
-
-          {/* Mock location markers */}
-          <div className="absolute top-12 left-12 w-3 h-3 bg-teal-500 rounded-full animate-pulse" />
-          <div className="absolute top-20 right-16 w-3 h-3 bg-teal-500 rounded-full animate-pulse" />
-          <div className="absolute bottom-16 left-20 w-3 h-3 bg-teal-500 rounded-full animate-pulse" />
-          <div className="absolute bottom-12 right-12 w-3 h-3 bg-teal-500 rounded-full animate-pulse" />
         </div>
 
         {/* Scanner Button */}
@@ -163,7 +228,11 @@ export function VehiclesTab() {
             variant={selectedType === "all" ? "default" : "outline"}
             size="sm"
             onClick={() => setSelectedType("all")}
-            className={selectedType === "all" ? "bg-teal-600 hover:bg-teal-700" : "border-gray-700 hover:bg-gray-800"}
+            className={
+              selectedType === "all"
+                ? "bg-teal-600 hover:bg-teal-700"
+                : "border-gray-700 hover:bg-gray-800"
+            }
           >
             Wszystkie
           </Button>
@@ -171,21 +240,14 @@ export function VehiclesTab() {
             variant={selectedType === "bike" ? "default" : "outline"}
             size="sm"
             onClick={() => setSelectedType("bike")}
-            className={selectedType === "bike" ? "bg-teal-600 hover:bg-teal-700" : "border-gray-700 hover:bg-gray-800"}
+            className={
+              selectedType === "bike"
+                ? "bg-teal-600 hover:bg-teal-700"
+                : "border-gray-700 hover:bg-gray-800"
+            }
           >
             <Bike className="mr-1 h-4 w-4" />
             Rowery
-          </Button>
-          <Button
-            variant={selectedType === "scooter" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setSelectedType("scooter")}
-            className={
-              selectedType === "scooter" ? "bg-teal-600 hover:bg-teal-700" : "border-gray-700 hover:bg-gray-800"
-            }
-          >
-            <Scooter className="mr-1 h-4 w-4" />
-            Hulajnogi
           </Button>
         </div>
 
@@ -195,22 +257,31 @@ export function VehiclesTab() {
             Dostępne pojazdy w pobliżu ({filteredVehicles.length})
           </h3>
           {filteredVehicles.map((vehicle) => (
-            <Card key={vehicle.id} className="bg-gray-800/50 border-gray-700 p-4">
+            <Card
+              key={vehicle.id}
+              className="bg-white-800/50 border-gray-700 p-4"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex gap-3 flex-1">
-                  <div className={`p-3 rounded-lg ${vehicle.type === "bike" ? "bg-blue-500/10" : "bg-purple-500/10"}`}>
-                    {vehicle.type === "bike" ? (
-                      <Bike className={`h-6 w-6 ${vehicle.type === "bike" ? "text-blue-400" : "text-purple-400"}`} />
-                    ) : (
-                      <Scooter className={`h-6 w-6 ${vehicle.type === "bike" ? "text-blue-400" : "text-purple-400"}`} />
-                    )}
+                  <div
+                    className={`p-3 rounded  ${
+                      vehicle.type === "bike"
+                        ? "bg-blue-500/10"
+                        : "bg-purple-500/10"
+                    }`}
+                  >
+                    {
+                      <Bike
+                        className={`h-6 w-6 
+                            "text-blue-100"
+                             "text-purple-400"
+                        }`}
+                      />
+                    }
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold text-white">{vehicle.id}</h4>
-                      <Badge variant="outline" className="text-xs border-gray-600">
-                        {vehicle.type === "bike" ? "Rower" : "Hulajnoga"}
-                      </Badge>
+                      <h4 className="font-semibold text-black">{vehicle.id}</h4>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-400 mb-2">
                       <div className="flex items-center gap-1">
@@ -219,7 +290,13 @@ export function VehiclesTab() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Battery
-                          className={`h-3 w-3 ${vehicle.battery > 80 ? "text-green-400" : vehicle.battery > 50 ? "text-yellow-400" : "text-red-400"}`}
+                          className={`h-3 w-3 ${
+                            vehicle.battery > 80
+                              ? "text-green-400"
+                              : vehicle.battery > 50
+                              ? "text-yellow-400"
+                              : "text-red-400"
+                          }`}
                         />
                         <span>{vehicle.battery}%</span>
                       </div>
@@ -247,23 +324,20 @@ export function VehiclesTab() {
         </div>
 
         {/* Pricing Info */}
-        <div className="p-4 mx-4 mb-4 bg-gray-800/30 border border-gray-700 rounded-lg">
-          <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-            <Clock className="h-4 w-4 text-teal-400" />
+        <div className="p-4 mx-4 mb-4 bg-white-800/30 border border-gray-700 rounded-lg">
+          <h4 className="font-semibold text-black-400 mb-2 flex items-center gap-2">
+            <Clock className="h-4 w-4 text-black-400" />
             Cennik
           </h4>
           <div className="space-y-1 text-sm">
-            <div className="flex justify-between text-gray-400">
+            <div className="flex justify-between text-black-400">
               <span>Rower:</span>
-              <span className="text-white">0.50 zł/min</span>
+              <span className="text-black">0.50 zł/min</span>
             </div>
-            <div className="flex justify-between text-gray-400">
-              <span>Hulajnoga:</span>
-              <span className="text-white">0.70 zł/min</span>
-            </div>
-            <div className="flex justify-between text-gray-400 pt-2 border-t border-gray-700">
+
+            <div className="flex justify-between text-black-400 pt-2 border-t border-gray-700">
               <span>Opłata za odblokowanie:</span>
-              <span className="text-white">1.00 zł</span>
+              <span className="text-black">1.00 zł</span>
             </div>
           </div>
         </div>
@@ -274,7 +348,9 @@ export function VehiclesTab() {
         <DialogContent className="bg-gray-900 border-gray-700">
           <DialogHeader>
             <DialogTitle className="text-white">Skanowanie kodu QR</DialogTitle>
-            <DialogDescription className="text-gray-400">Skieruj kamerę na kod QR na pojeździe</DialogDescription>
+            <DialogDescription className="text-gray-400">
+              Skieruj kamerę na kod QR na pojeździe
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center justify-center py-8">
             <div className="relative w-48 h-48 border-4 border-teal-500 rounded-lg">
@@ -291,14 +367,20 @@ export function VehiclesTab() {
 
       <style jsx>{`
         @keyframes scan {
-          0% { transform: translateY(0); }
-          50% { transform: translateY(192px); }
-          100% { transform: translateY(0); }
+          0% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(192px);
+          }
+          100% {
+            transform: translateY(0);
+          }
         }
         .animate-scan {
           animation: scan 2s ease-in-out infinite;
         }
       `}</style>
     </div>
-  )
+  );
 }
