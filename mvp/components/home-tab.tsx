@@ -11,8 +11,22 @@ import { Button } from "@/components/ui/button";
 import { Ticket, Calendar, TrendingUp, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
-export default function HomeTab() {
-  const { user } = useAuth();
+type Props = {
+  setActiveTab: (value: string) => void
+}
+{/*}
+export function HomeComponent({ setActiveTab }: Props) {
+  return (
+    <div className="mt-4">
+      <Button onClick={() => setActiveTab("tab2")}>
+        Przejdź do zakładki 2
+      </Button>
+    </div>
+  )
+}*/}
+
+export default function HomeTab({ setActiveTab }: Props) {
+  const { user } = useAuth()
 
   return (
     <div className="p-4 space-y-6">
@@ -42,7 +56,7 @@ export default function HomeTab() {
       </Card>
 
       <div className="grid grid-cols-2 gap-4">
-        <Card className="hover:bg-accent transition-colors cursor-pointer">
+        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("tickets")}>
           <CardHeader className="pb-3">
             <Ticket className="w-8 h-8 text-primary mb-2" />
             <a href=""></a>
@@ -55,7 +69,7 @@ export default function HomeTab() {
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer">
+        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("events")}>
           <CardHeader className="pb-3">
             <Calendar className="w-8 h-8 text-primary mb-2" />
             <CardTitle className="text-base">Events</CardTitle>
@@ -67,17 +81,17 @@ export default function HomeTab() {
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer">
+        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("news")}>
           <CardHeader className="pb-3">
             <TrendingUp className="w-8 h-8 text-primary mb-2" />
-            <CardTitle className="text-base">Rozkład</CardTitle>
+            <CardTitle className="text-base">Awarie</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground">Sprawdź połączenia</p>
           </CardContent>
         </Card>
 
-        <Card className="hover:bg-accent transition-colors cursor-pointer">
+        <Card className="hover:bg-accent transition-colors cursor-pointer" onClick={() => setActiveTab("places")}>
           <CardHeader className="pb-3">
             <MapPin className="w-8 h-8 text-primary mb-2" />
             <CardTitle className="text-base">Miejsca</CardTitle>

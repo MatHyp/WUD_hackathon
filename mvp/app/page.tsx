@@ -63,7 +63,7 @@ export default function KartaMiejskaApp() {
       <main className="max-w-screen-xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="home" className="mt-0">
-            <HomeTab />
+            <HomeTab setActiveTab={setActiveTab} />
           </TabsContent>
           <TabsContent value="tickets" className="mt-0">
             <TicketsTab />
