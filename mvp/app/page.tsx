@@ -26,6 +26,7 @@ import ProfileTab from "@/components/profile-tab";
 import { VehiclesTab } from "@/components/vehicles-tab";
 import Image from "next/image";
 import SurveyTab from "@/components/survey-tab";
+import { usePreferences } from "@/lib/preferences-context"
 
 import logo from "../img/images.png";
 import LoginModal from "@/components/LoginModal";
@@ -34,11 +35,34 @@ export default function KartaMiejskaApp() {
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [user, setUser] = useState<{ username: string, password: string } | undefined>(undefined);
 
+  const { preferences } = usePreferences()
+
   const handleMoreMenuSelect = (tab: string) => {
     setActiveTab(tab);
     setIsMoreMenuOpen(false);
   };
   const [modalType, setModalType] = useState<"register" | "login" | null>("login");
+
+  const allTabs = [
+    { value: "home", label: "Home", icon: Home },
+    { value: "tickets", label: "Bilety", icon: Ticket },
+    { value: "events", label: "Wydarzenia", icon: Calendar },
+    { value: "news", label: "Awarie", icon: Newspaper },
+    { value: "taxes", label: "Podatki", icon: Banknote },
+    { value: "places", label: "Miejsca", icon: MapPin },
+    { value: "vehicles", label: "Pojazdy", icon: Bike },
+    { value: "profile", label: "Profil", icon: User },
+    { value: "survey", label: "Ankieta", icon: ClipboardList },
+  ]
+
+  // preferencje z ankiety (pytanie 1)
+  const selected = preferences[1] || []
+
+  // dolny panel = tylko wybrane
+  const bottomTabs = allTabs.filter(tab => selected.includes(tab.label))
+
+  // reszta trafia do „Więcej”
+  const moreTabs = allTabs.filter(tab => !selected.includes(tab.label))
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -111,46 +135,17 @@ export default function KartaMiejskaApp() {
                     </Button>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <Button
-                      variant={activeTab === "vehicles" ? "default" : "outline"}
-                      className="h-20 flex-col gap-2"
-                      onClick={() => handleMoreMenuSelect("vehicles")}
-                    >
-                      <Bike className="w-6 h-6" />
-                      <span>Pojazdy</span>
-                    </Button>
-                    <Button
-                      variant={activeTab === "places" ? "default" : "outline"}
-                      className="h-20 flex-col gap-2"
-                      onClick={() => handleMoreMenuSelect("places")}
-                    >
-                      <MapPin className="w-6 h-6" />
-                      <span>Miejsca</span>
-                    </Button>
-                    <Button
-                      variant={activeTab === "taxes" ? "default" : "outline"}
-                      className="h-20 flex-col gap-2"
-                      onClick={() => handleMoreMenuSelect("taxes")}
-                    >
-                      <Banknote className="w-6 h-6" />
-                      <span>Podatki</span>
-                    </Button>
-                    <Button
-                      variant={activeTab === "survey" ? "default" : "outline"}
-                      className="h-20 flex-col gap-2"
-                      onClick={() => handleMoreMenuSelect("survey")}
-                    >
-                      <ClipboardList className="w-6 h-6" />
-                      <span>Ankieta</span>
-                    </Button>
-                    <Button
-                      variant={activeTab === "profile" ? "default" : "outline"}
-                      className="h-20 flex-col gap-2"
-                      onClick={() => handleMoreMenuSelect("profile")}
-                    >
-                      <User className="w-6 h-6" />
-                      <span>Profil</span>
-                    </Button>
+                    {moreTabs.map((tab) => (
+                      <Button
+                        key={tab.value}
+                        variant={activeTab === tab.value ? "default" : "outline"}
+                        className="h-20 flex-col gap-2"
+                        onClick={() => handleMoreMenuSelect(tab.value)}
+                      >
+                        <tab.icon className="w-6 h-6" />
+                        <span>{tab.label}</span>
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -158,41 +153,17 @@ export default function KartaMiejskaApp() {
           )}
 
           <TabsList className="fixed bottom-0 left-0 right-0 h-16 w-full rounded-none border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 grid grid-cols-5 gap-0">
-            <TabsTrigger
-              value="home"
-              className="flex-col gap-1 h-full data-[state=active]:text-primary"
-            >
-              <Home className="w-5 h-5" />
-              <span className="text-xs">Home</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="tickets"
-              className="flex-col gap-1 h-full data-[state=active]:text-primary"
-            >
-              <Ticket className="w-5 h-5" />
-              <span className="text-xs">Bilety</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="events"
-              className="flex-col gap-1 h-full data-[state=active]:text-primary"
-            >
-              <Calendar className="w-5 h-5" />
-              <span className="text-xs">Wydarzenia</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="news"
-              className="flex-col gap-1 h-full data-[state=active]:text-primary"
-            >
-              <Newspaper className="w-5 h-5" />
-              <span className="text-xs">Awarie</span>
-            </TabsTrigger>
-            {/*<TabsTrigger
-              value="taxes"
-              className="flex-col gap-1 h-full data-[state=active]:text-primary"
-            >
-              <Banknote className="w-5 h-5" />
-              <span className="text-xs">Podatki</span>
-            </TabsTrigger>*/}
+            {bottomTabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="flex-col gap-1 h-full data-[state=active]:text-primary"
+              >
+                <tab.icon className="w-5 h-5" />
+                <span className="text-xs">{tab.label}</span>
+              </TabsTrigger>
+            ))}
+
             <button
               className="flex flex-col items-center justify-center gap-1 h-full text-muted-foreground hover:text-foreground transition-colors data-[active=true]:text-primary"
               onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
@@ -201,7 +172,8 @@ export default function KartaMiejskaApp() {
                 activeTab === "vehicles" ||
                 activeTab === "places" ||
                 activeTab === "taxes" ||
-                activeTab === "profile"
+                activeTab === "profile" ||
+                activeTab === "survey"
               }
             >
               <MoreHorizontal className="w-5 h-5" />

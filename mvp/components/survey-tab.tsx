@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { usePreferences } from "@/lib/preferences-context"
 
 type Question = {
     id: number
@@ -15,46 +16,66 @@ type Question = {
 const questions: Question[] = [
     {
         id: 1,
-        text: "Jaki jest Twój główny cel korzystania z aplikacji?",
-        options: ["Odkrywanie wydarzeń", "Kupowanie biletów", "Zarządzanie opłatami", "Inne"],
-    },
-    {
-        id: 2,
-        text: "Jak często planujesz korzystać z aplikacji?",
-        options: ["Codziennie", "Kilka razy w tygodniu", "Sporadycznie", "Raz w miesiącu"],
-    },
-    {
-        id: 3,
-        text: "Które typy wydarzeń najbardziej Cię interesują?",
-        options: ["Teatr i sztuka", "Sport", "Jedzenie", "Muzyka"],
+        text: "Które funkcje chcesz mieć w dolnym panelu?",
+        options: ["Bilety", "Wydarzenia", "Awarie", "Podatki", "Miejsca", "Pojazdy", "Profil"],
     },
 ]
 
 export default function SurveyTab() {
-    const [answers, setAnswers] = useState<Record<number, string[]>>({})
+    const { preferences, setPreferences } = usePreferences()
     const { toast } = useToast()
 
+    // lokalny stan (kopiujemy z kontekstu przy starcie)
+    const [localAnswers, setLocalAnswers] = useState<Record<number, string[]>>({})
+
+    useEffect(() => {
+        setLocalAnswers(preferences)
+    }, [preferences])
+
     const handleSelect = (qId: number, option: string) => {
-        setAnswers((prev) => {
+        setLocalAnswers((prev) => {
             const current = prev[qId] || []
-            return current.includes(option)
-                ? { ...prev, [qId]: current.filter((o) => o !== option) }
-                : { ...prev, [qId]: [...current, option] }
+
+            // jeśli klikamy już zaznaczoną opcję
+            if (current.includes(option)) {
+                return { ...prev, [qId]: current.filter((o) => o !== option) }
+            }
+
+            // jeśli klikamy nową opcję, ale mamy już 4 → nie dodawaj
+            if (qId === 1 && current.length >= 4) {
+                return prev
+            }
+
+            return { ...prev, [qId]: [...current, option] }
         })
     }
 
     const handleSubmit = () => {
+        const selected = localAnswers[1] || []
+
+        if (selected.length !== 4) {
+            toast({
+                title: "Błąd",
+                description: "Musisz wybrać dokładnie 4 opcje do dolnego panelu.",
+                variant: "destructive",
+            })
+            return
+        }
+
+        setPreferences(localAnswers) // zapisujemy globalnie tylko jeśli są 4
         toast({
-            title: "Dziękujemy za odpowiedzi!",
-            description: "Twoje preferencje pomogą nam lepiej dopasować aplikację.",
+            title: "Zapisano preferencje",
+            description: "Dolny panel został zaktualizowany zgodnie z Twoim wyborem.",
         })
     }
 
     return (
         <div className="p-4 space-y-6">
             <div className="space-y-2">
-                <h2 className="text-2xl font-bold">Ankieta preferencji</h2>
-                <p className="text-muted-foreground">Odpowiedz na kilka pytań, aby spersonalizować aplikację</p>
+                <h2 className="text-2xl font-bold">Ankieta personalizacji</h2>
+                <p className="text-muted-foreground">
+                    Wybierz dokładnie 4 funkcje, które mają być w dolnym panelu
+                </p>
             </div>
 
             <div className="space-y-4">
@@ -68,7 +89,7 @@ export default function SurveyTab() {
                                 <Badge
                                     key={opt}
                                     onClick={() => handleSelect(q.id, opt)}
-                                    variant={answers[q.id]?.includes(opt) ? "default" : "outline"}
+                                    variant={localAnswers[q.id]?.includes(opt) ? "default" : "outline"}
                                     className="cursor-pointer"
                                 >
                                     {opt}
