@@ -30,6 +30,7 @@ const initialIncidents = [
     status: "active",
     time: "30 min temu",
     severity: "high",
+    area: "Centrum",
   },
   {
     id: 2,
@@ -39,6 +40,7 @@ const initialIncidents = [
     status: "active",
     time: "1 godz. temu",
     severity: "medium",
+    area: "Centrum",
   },
   {
     id: 3,
@@ -48,6 +50,7 @@ const initialIncidents = [
     status: "active",
     time: "2 godz. temu",
     severity: "high",
+    area: "Podjuchy",
   },
   {
     id: 4,
@@ -57,6 +60,7 @@ const initialIncidents = [
     status: "resolved",
     time: "3 godz. temu",
     severity: "medium",
+    area: "Stare Miasto",
   },
 ]
 
@@ -68,9 +72,19 @@ const categories = [
   { value: "Inne", label: "Inne", icon: AlertTriangle, color: "text-red-500" },
 ]
 
+const areas = [
+  { value: "all", label: "Wszystkie Obszary", color: "text-yellow-500" },
+  { value: "Podjuchy", label: "Podjuchy", color: "text-yellow-500" },
+  { value: "Centrum", label: "Centrum", color: "text-yellow-500" },
+  { value: "Niebuszewo", label: "Niebuszewo", color: "text-yellow-500" },
+  { value: "Prawobrzeże", label: "Prawobrzeże", color: "text-yellow-500" },
+  { value: "Stare Miasto", label: "Stare Miasto", color: "text-yellow-500" }
+]
+
 export default function NewsTab() {
   const [incidents, setIncidents] = useState(initialIncidents)
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [selectedArea, setSelectedArea] = useState<string>("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { toast } = useToast()
 
@@ -79,6 +93,7 @@ export default function NewsTab() {
     description: "",
     category: "",
     location: "",
+    area: "",
   })
 
   const handleSubmitReport = (e: React.FormEvent) => {
@@ -89,6 +104,7 @@ export default function NewsTab() {
       title: formData.title,
       description: formData.description,
       category: formData.category,
+      area: formData.area,
       status: "active" as const,
       time: "Teraz",
       severity: "medium" as const,
@@ -96,7 +112,7 @@ export default function NewsTab() {
 
     setIncidents([newIncident, ...incidents])
     setIsDialogOpen(false)
-    setFormData({ title: "", description: "", category: "", location: "" })
+    setFormData({ title: "", description: "", category: "", location: "", area: "" })
 
     toast({
       title: "Zgłoszenie wysłane",
@@ -104,8 +120,11 @@ export default function NewsTab() {
     })
   }
 
-  const filteredIncidents =
-    selectedCategory === "all" ? incidents : incidents.filter((inc) => inc.category === selectedCategory)
+  const filteredIncidents = incidents.filter((inc) => {
+    const categoryMatch = selectedCategory === "all" || inc.category === selectedCategory
+    const areaMatch = selectedArea === "all" || inc.area === selectedArea
+    return categoryMatch && areaMatch
+  })
 
   const getCategoryIcon = (category: string) => {
     const cat = categories.find((c) => c.value === category)
@@ -160,6 +179,30 @@ export default function NewsTab() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="area">Obszary</Label>
+                  <Select
+                    value={formData.area}
+                    onValueChange={(value) => setFormData({ ...formData, area: value })}
+                    required
+                  >
+                    <SelectTrigger id="area">
+                      <SelectValue placeholder="Wybierz obszar" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {areas.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          <div className="flex items-center gap-2">
+                            {/*<cat.icon className={`w-4 h-4 ${cat.color}`} />*/}
+                            {cat.label}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="title">Tytuł zgłoszenia</Label>
                   <Input
@@ -218,6 +261,27 @@ export default function NewsTab() {
           >
             <cat.icon className="w-4 h-4" />
             {cat.label}
+          </Button>
+        ))}
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <Button
+          variant={selectedArea === "all" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setSelectedArea("all")}
+        >
+          Wszystkie obszary
+        </Button>
+        {areas.filter((a) => a.value !== "all").map((area) => (
+          <Button
+            key={area.value}
+            variant={selectedArea === area.value ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedArea(area.value)}
+            className="whitespace-nowrap"
+          >
+            {area.value}
           </Button>
         ))}
       </div>
