@@ -78,11 +78,13 @@ export default function KartaMiejskaApp() {
         </div>
       </header>
 
-      <LoginModal
+{/*
+       <LoginModal
         isOpen={modalType === "login"}
         onClose={() => setModalType(null)}
         onSwitchToRegister={() => setModalType("register")}
       />
+ */}
 
       <main className="max-w-screen-xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
